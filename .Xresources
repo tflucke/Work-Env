@@ -1,0 +1,7 @@
+*mon1: DVI-D-0
+*mon2: VGA-0
+
+XTerm*metaSendsEscape: true
+XTerm*eightBitInput: false
+XTerm*Background: black
+XTerm*Foreground: green

@@ -1,0 +1,16 @@
+#!/usr/bin/sh
+
+alias emacs='emacs -nw'
+alias ls='ls --color=auto'
+alias mv='mv -v'
+alias cp='cp -v'
+alias rm='rm -v'
+alias rmdir='rmdir -v'
+alias mkdir='mkdir -v'
+alias tar='tar -v'
+alias chown='chown -v'
+alias chgrp='chgrp -v'
+alias chmod='chmod -v'
+alias ln='ln -v'
+alias locate='locate -v'
+alias sudo='sudo '
