@@ -26,6 +26,7 @@
   (package-refresh-contents)
   (package-install 'use-package))
 (require 'use-package)
+(setq use-package-always-ensure t)
 
 ;; ----------- Ensime -----------
 ;; Java/Scala featues.  Includes:
@@ -36,7 +37,6 @@
 ;; * Refactoring
 ;; * Error detection
 (use-package ensime
-  :ensure t
   :pin melpa-stable)
 
 ;; xTerm mouse support
@@ -47,10 +47,13 @@
 
 ;; ---------- Color Themes ----------
 (use-package color-theme
-  :ensure t
+  :init
+  ; Investiigate: Fixes error about missing directory
+  (unless (file-exists-p "~/.emacs.d/elpa/color-theme-20070910.1007/themes") (make-directory "~/.emacs.d/elpa/color-theme-20070910.1007/themes"))
   :config
   (color-theme-initialize)
-  (use-package base16-theme
-    :ensure t
-    :config (load-theme 'base16-tomorrow-night t))
   )
+
+(use-package base16-theme
+  :requires color-theme
+  :config (load-theme 'base16-tomorrow-night t))
