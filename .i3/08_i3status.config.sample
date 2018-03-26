@@ -1,0 +1,25 @@
+## Begin i3status
+bar {
+	output			$Mon1
+	position		top
+	mode			dock
+#	hidden_state		show
+#	modifier		Mod1
+	tray_output		primary
+#	font -misc-fixed-medium-r-normal--13-120-75-75-C-70-iso10646-1
+#	font pango:DejaVu Sans Mono 10
+	workspace_buttons	yes
+	colors {
+		separator	#BBFF00
+		statusline	#FFFFFF
+		background	#000033
+#					Border	Background	Text
+		focused_workspace	#4c7899	#285577		#ffffff
+		active_workspace	#333333	#5f676a		#ffffff
+		inactive_workspace	#333333	#222222		#888888
+		urgent_workspace	#2f343a	#900000		#ffffff
+	}
+	status_command		i3status -c "~/.i3/i3status.conf"
+}
+## End i3status
+
