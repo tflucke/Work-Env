@@ -1,0 +1,5 @@
+cat $(ls $HOME/.i3/*.config | sort) > $HOME/.i3/config
+
+numlockx
+
+#exec xautolock -time 15 -locker '/usr/local/bin/suspend' &
