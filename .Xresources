@@ -1,5 +1,4 @@
-*mon1: DVI-D-0
-*mon2: VGA-0
+#include ".Xresources.d/monitors"
 
 XTerm*metaSendsEscape: true
 XTerm*eightBitInput: false
