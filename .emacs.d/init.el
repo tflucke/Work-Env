@@ -7,8 +7,7 @@
  show-paren-delay 0.25)
 
 ;; Tab Config
-(setq tab-width 2)
-(setq-default indent-tabs-mode t)
+(setq tab-width 4)
 
 ;; ----------- Package Managing -----------
 ;; The package manager
@@ -22,6 +21,7 @@
                     ("melpa-stable" . "https://stable.melpa.org/packages/"))
  package-archive-priorities '(("melpa-stable" . 1)))
 (package-initialize)
+
 (unless (package-installed-p 'use-package)
   (package-refresh-contents)
   (package-install 'use-package))
@@ -42,18 +42,31 @@
 ;; xTerm mouse support
 ;; Disable because it became annoying, sounds cool though.
 ;;
-;(require 'mouse)
-;(xterm-mouse-mode t)
+;;(require 'mouse)
+;;(xterm-mouse-mode t)
 
 ;; ---------- Color Themes ----------
 (use-package color-theme
+  ;; Investiigate: Fixes error about missing directory
   :init
-  ; Investiigate: Fixes error about missing directory
   (unless (file-exists-p "~/.emacs.d/elpa/color-theme-20070910.1007/themes") (make-directory "~/.emacs.d/elpa/color-theme-20070910.1007/themes"))
   :config
-  (color-theme-initialize)
-  )
+  (color-theme-initialize))
 
 (use-package base16-theme
   :requires color-theme
   :config (load-theme 'base16-tomorrow-night t))
+
+;; ------------ Web Mode ------------
+(use-package multi-web-mode
+  :config
+  (setq mweb-default-major-mode 'html-mode)
+  (setq mweb-tags 
+		'((php-mode "<\\?php\\|<\\? \\|<\\?=" "\\?>")
+		  (js-mode  "<script[^>]*>" "</script>")
+		  (css-mode "<style[^>]*>" "</style>")))
+  (setq mweb-filename-extensions '("php" "htm" "html" "ctp" "phtml" "php4" "php5"))
+  (multi-web-global-mode 1))
+
+;; ------------ Git Mode ------------
+(use-package magit)
