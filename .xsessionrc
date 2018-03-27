@@ -1,4 +1,6 @@
-cat $(ls $HOME/.i3/*.config | sort) > $HOME/.i3/config
+#!/bin/sh
+
+~/.i3/generatei3Config.sh
 
 numlockx
 
