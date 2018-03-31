@@ -27,7 +27,14 @@ export HISTCONTROL=ignoredups
 bind '"\e[1;5D": backward-word'
 bind '"\e[1;5C": forward-word'
 
-source /usr/share/git/completion/git-completion.bash
+# List of directories to look for git completion
+gitCompletion="/usr/share/git/completion/git-completion.bash /usr/share/bash-completion/completions/git"
+
+for f in $gitCompletion; do
+    if [ -f "$f" ]; then
+	source "$f"
+    fi
+done
 
 #for script in "$SH_DIR"/*.sh ; do # Does not work.  Don't know why.
 #for script in ~/.config/env/*.sh; do
