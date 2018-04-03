@@ -59,6 +59,7 @@ ecex()
 }
 
 #alias xterm='echo "xterm -rv" && xterm -rv'
+alias emacs='emacs -nw'
 alias xterm='ecex xterm -rv'
 alias decks='ecex "$MTG_DIR" && ecex mv /tmp/*.dec "$MTG_DIR"'
 alias newMusic='ecex sudo chown media /tmp/*.mp3 && ecex sudo -u media mv -v /tmp/*.mp3 /media/music && ecex mpc update'
