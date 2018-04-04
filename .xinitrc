@@ -1,5 +1,5 @@
 [[ -f ~/.Xresources ]] && xrdb -merge -I$HOME ~/.Xresources
 
-source .xsessionrc
+sh ~/.xsessionrc
 
 exec /usr/bin/i3
