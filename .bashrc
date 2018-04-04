@@ -8,6 +8,7 @@
 MUSIC_DIR="/media/music"
 MTG_DIR="~/.local/share/data/Cockatrice/Cockatrice/decks"
 SH_DIR="~/.config/env"
+SERVER_IP="63.246.2.164"
 
 export EDITOR="/usr/bin/emacs -nw"
 export BROWSER=/usr/bin/firefox
