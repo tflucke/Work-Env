@@ -1,0 +1,13 @@
+# Ignore everything
+*
+
+# But not these files...
+!.gitignore
+!.i3
+!.bashrc
+!.Xresources
+!.Xresources.d
+!.config/env
+!.emacs.d
+!.xinitrc
+!.xsessionrc
