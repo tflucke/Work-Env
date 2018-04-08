@@ -37,10 +37,10 @@ for f in $gitCompletion; do
     fi
 done
 
-#for script in "$SH_DIR"/*.sh ; do # Does not work.  Don't know why.
-#for script in ~/.config/env/*.sh; do
-#    source "$script"
-#done
+# TODO: Can't use SH_DIR, doesn't expand with *.
+for script in ~/.config/env/*.sh; do
+    source "$script"
+done
 
 getLyricalSongs()
 {
