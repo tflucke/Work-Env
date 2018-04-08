@@ -14,7 +14,7 @@
               tab-width 4
 	          indent-tabs-mode nil
               x-select-enable-clipboard t
-              backup-directory-alist `(("." . backup-directory))
+              backup-directory-alist `(("." . ,backup-directory))
               delete-old-versions t)
 
 ;; (global-linum-mode)
@@ -22,23 +22,26 @@
 ;; Delete selected text when typing (normal editor behavior)
 (delete-selection-mode t)
 
+(defun mapcar-dot* (f list)
+  (loop for (a . b) on list
+        collect (funcall f a)
+        unless (listp b)
+        collect (funcall f b)))
+
 ;; ------------- Keybindings -------------
 (global-set-key (kbd "C-c /") 'comment-or-uncomment-region)
-(global-set-key (kbd "C-x g") 'magit-status)
 (global-set-key (kbd "C-c C-k") 'compile)
-(global-set-key (kbd "M-p") 'print-buffer)
 
 ;; ----------- Package Managing -----------
 ;; The package manager
 (require 'package)
 
 ;; Add package sources
-(setq
- package-archives '(("gnu" . "https://elpa.gnu.org/packages/")
-                    ("org" . "https://orgmode.org/elpa/")
-                    ("melpa" . "https://melpa.org/packages/")
-                    ("melpa-stable" . "https://stable.melpa.org/packages/"))
- package-archive-priorities '(("melpa-stable" . 1)))
+(setq package-archives '(("gnu" . "https://elpa.gnu.org/packages/")
+                         ("org" . "https://orgmode.org/elpa/")
+                         ("melpa" . "https://melpa.org/packages/")
+                         ("melpa-stable" . "https://stable.melpa.org/packages/"))
+      package-archive-priorities '(("melpa-stable" . 1)))
 (package-initialize)
 
 (unless (package-installed-p 'use-package)
@@ -49,47 +52,13 @@
 
 ;; ---------- Use X11 clipboard -----------
 (use-package xclip
-  :config
-  (dolist (hook '(text-mode-hook prog-mode-hook)) (add-hook hook (lambda () (xclip-mode)))))
-
-;; --------- Parentheses Matching ---------
-(use-package highlight-parentheses
-  :config
-  (define-globalized-minor-mode global-highlight-parentheses-mode
-	highlight-parentheses-mode
-	(lambda ()
-	  (highlight-parentheses-mode t)))
-  (global-highlight-parentheses-mode t)
-  )
-
-(use-package autopair
-  :config
-  (autopair-global-mode))
-
-;; ----------- Ensime -----------
-;; Java/Scala featues.  Includes:
-;; * Inferred types
-;; * Autocomplete
-;; * Syntax highlighting
-;; * Jump to source/docs
-;; * Refactoring
-;; * Error detection
-(use-package ensime
-  :pin melpa-stable)
-
-; --------- C Syntax checker ---------
-(use-package flycheck-irony)
-
-;; xTerm mouse support
-;; Disable because it became annoying, sounds cool though.
-;;
-;;(require 'mouse)
-;;(xterm-mouse-mode t)
+  :if (executable-find "xclip")
+  :hook ((text-mode-hook prog-mode-hook) . xclip-mode))
 
 ;; ---------- Color Themes ----------
 (use-package color-theme
-  ;; TODO: Fixes error about missing directory.  Don't know why.
   :init
+  ;; TODO: Fixes error about missing directory.  Don't know why.
   (unless (file-exists-p "~/.emacs.d/elpa/color-theme-20070910.1007/themes")
     (make-directory "~/.emacs.d/elpa/color-theme-20070910.1007/themes"))
   :config
@@ -99,47 +68,96 @@
   :requires color-theme
   :config (load-theme 'base16-tomorrow-night t))
 
+;; --------- Parentheses Matching ---------
+(show-paren-mode)
+(use-package highlight-parentheses
+  :config
+  (define-globalized-minor-mode global-highlight-parentheses-mode
+	highlight-parentheses-mode
+	(lambda ()
+	  (highlight-parentheses-mode t)))
+  (global-highlight-parentheses-mode t))
+
+(use-package autopair
+  :config
+  (autopair-global-mode))
+
+;; ------------ xTerm Mouse ------------
+;; Disable because it became annoying, sounds cool though.
+(use-package mouse
+  :disabled
+  :config
+  (xterm-mouse-mode t))
+
+;; ----------- Ensime -----------
+;; Java/Scala featues.  Includes:
+;; * Inferred types
+;; * Autocomplete
+;; * Syntax highlighting
+;; * Jump to source/docs
+;; * Refactoring
+;; * Error detection
+(use-package scala-mode
+  :mode "\\.scala\\'")
+
+(use-package ensime
+  :disabled
+  :if (version<= "24.4" emacs-version)
+  :pin melpa-stable)
+
+; --------- C Syntax checker ---------
+(use-package flycheck-irony
+  :hook c-mode
+  :mode ("\\.c\\'" "\\.h\\'"))
+
 ;; ------------ Web Mode ------------
 (use-package multi-web-mode
+  :init
+  (setq mweb-default-major-mode 'html-mode
+        mweb-tags '((php-mode "<\\?php\\|<\\? \\|<\\?=" "\\?>")
+                    (js-mode  "<script[^>]*>" "</script>")
+                    (css-mode "<style[^>]*>" "</style>"))
+        mweb-filename-extensions '("php" "htm" "html" "ctp" "phtml" "php4" "php5"))
+;  :mode (mapcar-dot* (format "\\.%s\\'" ext '("php" "htm" "html" "ctp" "phtml" "php4" "php5")))
   :config
-  (setq mweb-default-major-mode 'html-mode)
-  (setq mweb-tags 
-		'((php-mode "<\\?php\\|<\\? \\|<\\?=" "\\?>")
-		  (js-mode  "<script[^>]*>" "</script>")
-		  (css-mode "<style[^>]*>" "</style>")))
-  (setq mweb-filename-extensions '("php" "htm" "html" "ctp" "phtml" "php4" "php5"))
   (multi-web-global-mode 1))
 
 ;; ------------ Git Mode ------------
-(use-package magit)
+(when (version<= "24.4" emacs-version)
+  (use-package magit
+    :bind ("C-x g" . magit-status)))
 
 ;; ----------- Rust Mode ------------
-(use-package rust-mode)
+(use-package rust-mode
+  :mode ("\\.rs\\'"))
 (use-package rust-playground
   :requires rust-mode)
 (use-package cargo
-  :requires rust-mode)
+  :after rust-mode)
 (use-package flycheck-rust
-  :requires rust-mode)
+  :after rust-mode)
 
 ;; ----------- i3 Support ----------
-;(if (equal (getenv "DESKTOP_SESSION") "i3")
-;    (use-package i3wm))
+(use-package i3wm
+  :disabled
+  :if (equal (getenv "DESKTOP_SESSION") "i3"))
 
 ;; --------- Racket Mode ----------
 (use-package racket-mode)
 
-;; --------- Scala Mode -----------
-(use-package scala-mode)
-
 ;; ---------- C# Mode -------------
-(use-package csharp-mode)
+(use-package csharp-mode
+  :if (version<= "24.4" emacs-version)
+  :mode ("\\.cs\\'"))
 
 ;; ------- Markdown Mode ----------
-(use-package markdown-mode)
+(when (version<= "24.4" emacs-version)
+  (use-package markdown-mode
+    :mode ("\\.markdown\\'" "\\.md\\'")))
 
 ;; ---- StackOverflow Client ------
-;(use-package sx)
+(use-package sx
+  :disabled)
 
 ;; -------- Spellcheck ------------
 (defun flyspell-detect-ispell-args (&optional run-together)
@@ -149,6 +167,10 @@
 		 "-d en_US")))
 
 (use-package flyspell-correct-popup
+  :bind ("M-s" . ispell-word)
+  :hook ((text-mode . flyspell-mode)
+         (prog-mode . flyspell-prog-mode)
+         ((flyspell-mode flyspell-prog-mode) . flyspell-buffer))
   :config
   (cond
    ((executable-find "aspell")
@@ -160,21 +182,39 @@
    (t
 	(setq ispell-program-name nil)))
   (setq-default ispell-extra-args (flyspell-detect-ispell-args t))
-  (global-set-key (kbd "M-s") 'ispell-word)
-  (setq-default flyspell-issue-message-flag nil)
-  (dolist (hook '(text-mode-hook magit-mode-hook)) (add-hook hook (lambda () (flyspell-mode))))
-  (add-hook 'prog-mode-hook (lambda () (flyspell-prog-mode))))
+  (setq-default flyspell-issue-message-flag nil))
 
 ;; -------- REST Client ---------
-(use-package restclient)
+(use-package restclient
+  :commands (restclient-copy-curl-command
+             restclient-http-send-current
+             restclient-http-send-current-raw
+             restclient-http-send-current-stay-in-window
+             restclient-jump-next
+             restclient-jump-prev
+             restclient-mark-current
+             restclient-mode
+             restclient-narrow-to-current
+             restclient-outline-mode
+             restclient-toggle-body-visibility
+             restclient-toggle-body-visibility-or-indent))
 
 ;; ------- Highlight TODO -------
 (use-package hl-todo
-  :config
-  (add-hook 'prog-mode-hook (lambda () (hl-todo-mode))))
+  :commands (hl-todo-mode
+             hl-todo-next
+             hl-todo-occur
+             hl-todo-previous)
+  :hook (prog-mode . hl-todo-mode))
 
 ;; ---- Printer Integration -----
 (use-package printing
+  :bind ("M-p" . print-buffer)
+  :commands (print-buffer
+             print-region
+             lpr-buffer
+             lpr-customize
+             lpr-region)
   :config
   (pr-update-menus t))
 
