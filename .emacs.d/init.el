@@ -39,6 +39,9 @@
 (use-package ensime
   :pin melpa-stable)
 
+; --------- C Syntax checker ---------
+(use-package flycheck-irony)
+
 ;; xTerm mouse support
 ;; Disable because it became annoying, sounds cool though.
 ;;
@@ -70,3 +73,44 @@
 
 ;; ------------ Git Mode ------------
 (use-package magit)
+
+;; ----------- Rust Mode ------------
+(use-package rust-mode)
+(use-package rust-playground
+  :requires rust-mode)
+(use-package cargo
+  :requires rust-mode)
+(use-package flycheck-rust
+  :requires rust-mode)
+
+;; ----------- i3 Support ----------
+;(if (equal (getenv "DESKTOP_SESSION") "i3")
+;    (use-package i3wm))
+
+;; --------- Racket Mode ----------
+(use-package racket-mode)
+
+;; --------- Scala Mode -----------
+(use-package scala-mode)
+
+;; ---------- C# Mode -------------
+(use-package csharp-mode)
+
+;; ---- StackOverflow Client ------
+;(use-package sx)
+
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(package-selected-packages
+   (quote
+    (rust-mode rust-playground slime-volleyball use-package multi-web-mode magit ensime color-theme base16-theme))))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )
+
