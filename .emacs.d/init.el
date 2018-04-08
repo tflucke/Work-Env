@@ -41,7 +41,7 @@
                          ("org" . "https://orgmode.org/elpa/")
                          ("melpa" . "https://melpa.org/packages/")
                          ("melpa-stable" . "https://stable.melpa.org/packages/"))
-      package-archive-priorities '(("melpa-stable" . 1)))
+      package-archive-priorities '(("melpa" . 1)))
 (package-initialize)
 
 (unless (package-installed-p 'use-package)
@@ -52,8 +52,8 @@
 
 ;; ---------- Use X11 clipboard -----------
 (use-package xclip
-  :if (executable-find "xclip")
-  :hook ((text-mode-hook prog-mode-hook) . xclip-mode))
+  :hook ((text-mode-hook prog-mode-hook) . xclip-mode)
+  :if (executable-find "xclip"))
 
 ;; ---------- Color Themes ----------
 (use-package color-theme
