@@ -1,142 +1,98 @@
-# ~/.bashrc: executed by bash(1) for non-login shells.
-# CSL default
-# by kkowal 2005-06-21 and updated by various other people
-# apence, 20120909: this is a very Sun centric set of options
-
-# DO NOT MAKE CHANGES TO THIS FILE.  Put your changes in your .mybashrc
-# file instead.
+#
+# ~/.bashrc
+#
 
 # If not running interactively, don't do anything
-[ -z "$PS1" ] && return
+[[ $- != *i* ]] && return
 
-#
-# `PS1' is run each time the bash prompt is drawn.  The following
-# line noise draws a colorful prompt with your user name, which
-# computer you're logged into, and what directory you're in.
-#
-#PS1="\@ \h \w\\$ " # non-colored
-PS1='\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\] \$ '
+MUSIC_DIR="/media/music"
+MTG_DIR="~/.local/share/data/Cockatrice/Cockatrice/decks"
+SH_DIR="~/.config/env"
+SERVER_IP="63.246.2.164"
 
-#
-# `PATH' determines the locations, in order, in which the shell will look for
-# executable programs.
-#
-#PATH=/bin:/usr/bin:/usr/sbin
-PATH=/bin:/usr/bin
-# IF it exists, Look in my home bin first, then the other path
-[ -d ~/bin ] && PATH=~/bin:$PATH
-# IF it exists, look here after the normal path
-[ -d /usr/local/bin ] && PATH=$PATH:/usr/local/bin
-[ -d /usr/share/bin ] && PATH=$PATH:/usr/share/bin
+export EDITOR="/usr/bin/emacs -nw"
+export BROWSER=/usr/bin/firefox
+export TERM=xterm-256color
 
-### NO don't add PATH=$PATH:.
-# the better option is to type ./command when the command is in cwd
-# if you want to make a habbit of running other commands out of your path
-# append them to your path in your .mybashrc
-# YOU need to know what you are going to run
+shopt -s checkwinsize
+shopt -s autocd
+shopt -s dirspell
+shopt -s xpg_echo
 
-export PATH
-
-#
-# `MANPATH' determines the locations, in order, where `man' will look
-# for manual pages.
-#
-MANPATH=/usr/share/man
-[ -d ~/man ] && MANPATH=~/man:$MANPATH
-
-# ML
-[ -d /usr/local/sml/bin ] && PATH=$PATH:/usr/local/sml/bin
-
-[ -d /usr/local/man ] && MANPATH=$MANPATH:/usr/local/man
-[ -d /usr/local/share/man ] && MANPATH=$MANPATH:/usr/local/share/man
-
-export MANPATH
-
-#
-# `PAGER' is the name of the program that many applications will use to
-# limit their output to a page at a time.  `more' is the original pager.
-# `less' additionally allows you to back up.
-#
-PAGER=less
-#PAGER=more
-
-# make less more friendly for non-text input files, see lesspipe(1)
-[ -x /usr/bin/lesspipe ] && eval "$(lesspipe)"
-
-#
-# `EDITOR' is the name of the program that many applications will invoke
-# to edit a text file.
-#
-#EDITOR=vim
-#EDITOR=emacs
-#EDITOR=pico # Warning: other users will be able to see
-             #  you using this with the ps command ;-)
-
-#
-# common aliases
-#
-# the following is a list of commonly used aliases, to use them simply remove
-# the '#' from the beginning of the line.  Read the man pages to find out 
-# exactly what each command does.
-#
-#alias h="history | $PAGER"
-#alias ls="ls -F1"
-#alias l.="ls -FA1"
-#alias ll="ls -slagFL"
-#alias lf="ls -F"
-#alias lr="ls -RF"
-#alias l="ls -FLAsC"
-#alias bye="logout"
-
-#
-# don't put duplicate lines in the history. See bash(1) for more options
-#
+# Set up history search
+bind '"\e[A": history-search-backward'
+bind '"\e[B": history-search-forward'
 export HISTCONTROL=ignoredups
 
-#
-# `umask' is an octal bit mask which constrains the permissions you
-# will grant to new files by default.  077 completely denies other users
-# access to your files.  022 denies all other users write access.
-# The CSL mandates that you keep your umask set to 077, and only
-# change some small known set of files so that others may have access.
-#
-umask 077
+# Set up left/right word skipping
+bind '"\e[1;5D": backward-word'
+bind '"\e[1;5C": forward-word'
 
-#
-# check the window size after each command and, if necessary,
-# update the values of LINES and COLUMNS.
-#
-shopt -s checkwinsize
+# List of directories to look for git completion
+gitCompletion="/usr/share/git/completion/git-completion.bash /usr/share/bash-completion/completions/git"
 
-#
-# `TERM' determines what kind of terminal the system expects you are using.
-# This affects whether and what kinds of control characters will be sent
-# to your terminal client (like color codes and cursor positions).
-#
-#TERM=xtermc
+for f in $gitCompletion; do
+    if [ -f "$f" ]; then
+	source "$f"
+    fi
+done
 
-#
-# if this is an xterm set the title of the window to user@host:dir
-#
-case "$TERM" in
-	xterm*|rxvt*)
-		PROMPT_COMMAND='echo -ne "\033]0;${USER}@${HOSTNAME}: ${PWD}\007"'
-		;;
-	*)
-    ;;
-esac
+# TODO: Can't use SH_DIR, doesn't expand with *.
+for script in ~/.config/env/*.sh; do
+    source "$script"
+done
 
-#
-# enable programmable completion features (you don't need to enable
-# this, if it's already enabled in /etc/bash.bashrc).
-#
-[ -f /etc/bash_completion ] && . /etc/bash_completion
+getLyricalSongs()
+{
+  mpc list album | grep -v '\(Portal 2.*\)\|\(Avatar.*\)\|\(Frozen.*\)' | while read -r line; do
+    printf "$(mpc find album "$line" | grep -v 'Instrumental')\n"
+  done
+}
 
-#
-# This runs a user defined script `.mybashrc', which by default does
-# nothing.
-#
-#[ -f ~/.bashrc.`uname` ] && . ~/.bashrc.`uname`
-#[ -f ~/.bashrc.`hostname` ] && . ~/.bashrc.`hostname`
-[ -f ~/.mybashrc ] && . ~/.mybashrc
-# end
+# echo exec
+# Print command and execute ala make
+#if type -t ecex; then
+ecex()
+{
+    echo "$@"
+    $@
+    
+}
+
+#alias xterm='echo "xterm -rv" && xterm -rv'
+alias emacs='emacs -nw'
+alias xterm='ecex xterm -rv'
+alias decks='ecex "$MTG_DIR" && ecex mv /tmp/*.dec "$MTG_DIR"'
+alias newMusic='ecex sudo chown media /tmp/*.mp3 && ecex sudo -u media mv -v /tmp/*.mp3 /media/music && ecex mpc update'
+alias playMusic='ecex mpc clear && ecex getLyricalSongs | ecex mpc add && ecex mpc shuffle && ecex mpc play'
+alias conServer='ecex ssh tflucke@63.246.2.164'
+alias packageSize="pacman -Qi | gawk '/^Name/ { x = $3 }; /^Installed Size/ { sub(/Installed Size  *:/, ""); print x":" $0 }' | sort -k2,3nr"
+
+#[ $exitCode -eq 0 ] && color=$FGRN || color=$FRED
+PS1="[\u@\h->$BLD\w$RS]
+$BLD$([ $? -ne 0 ] && echo '\[$FRED')(\$?)$RS \$ "
+
+# Auto mount
+# Mounts or unmounts intelligently.  Useful for keyboard bindings
+amount () {
+    if mount | grep -q "/dev/$1"; then
+	udevil umount -l "/dev/$1"
+    else
+	udevil mount "/dev/$1"
+    fi	
+} 
+
+mysqlpermissions()
+{
+  mysql -B -N $@ -e "SELECT DISTINCT CONCAT(
+    'SHOW GRANTS FOR \'', user, '\'@\'', host, '\';'
+    ) AS query FROM mysql.user" | \
+  mysql $@ | \
+  sed 's/\(GRANT .*\)/\1;/;s/^\(Grants for .*\)/## \1 ##/;/##/{x;p;x;}'
+}
+
+# Syncs music dir to dir.  Useful for syncing phone music.
+syncMusic()
+{
+    ecex rsync -ruh --progress "$MUSIC_DIR" "$1"
+}
