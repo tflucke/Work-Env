@@ -108,8 +108,6 @@
 ;; ---- StackOverflow Client ------
 ;(use-package sx)
 
-(setq prog-mode-hooks '(c++-mode-hook java-mode-hook racket-mode-hook scala-mode-hook csharp-mode-hook rust-mode-hook))
-
 ;; -------- Spellcheck ------------
 (defun flyspell-detect-ispell-args (&optional run-together)
   (cond ((string-match  "aspell$" ispell-program-name)
@@ -132,10 +130,8 @@
   (setq-default ispell-extra-args (flyspell-detect-ispell-args t))
   (global-set-key (kbd "M-s") 'ispell-word)
   (setq-default flyspell-issue-message-flag nil)
-  (dolist (hook '(text-mode-hook))
-    (add-hook hook (lambda () (flyspell-mode 1))))
-  (dolist (hook prog-mode-hooks)
-    (add-hook hook (lambda () (flyspell-prog-mode 1))))
+  (dolist (hook '(text-mode-hook magit-mode-hook)) (add-hook hook (lambda () (flyspell-mode))))
+  (add-hook 'prog-mode-hook (lambda () (flyspell-prog-mode)))
   )
 
 (custom-set-variables
