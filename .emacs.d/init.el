@@ -28,6 +28,15 @@
 (require 'use-package)
 (setq use-package-always-ensure t)
 
+(use-package highlight-parentheses
+  :config
+  (define-globalized-minor-mode global-highlight-parentheses-mode
+	highlight-parentheses-mode
+	(lambda ()
+	  (highlight-parentheses-mode t)))
+  (global-highlight-parentheses-mode t)
+  )
+
 ;; ----------- Ensime -----------
 ;; Java/Scala featues.  Includes:
 ;; * Inferred types
@@ -99,6 +108,36 @@
 ;; ---- StackOverflow Client ------
 ;(use-package sx)
 
+(setq prog-mode-hooks '(c++-mode-hook java-mode-hook racket-mode-hook scala-mode-hook csharp-mode-hook rust-mode-hook))
+
+;; -------- Spellcheck ------------
+(defun flyspell-detect-ispell-args (&optional run-together)
+  (cond ((string-match  "aspell$" ispell-program-name)
+		 (append (list "--sug-mode=ultra" "--lang=en_US") (if run-together '("--run-together" "--run-together-limit=5" "--run-together-min=2"))))
+		((string-match "hunspell$" ispell-program-name)
+		 "-d en_US"))
+  )
+
+(use-package flyspell-correct-popup
+  :config
+  (cond
+   ((executable-find "aspell")
+	(setq ispell-program-name "aspell"))
+   ((executable-find "hunspell")
+	(setq ispell-program-name "hunspell")
+	(setq ispell-local-dictionary "en_US")
+	(setq ispell-local-dictionary-alist '(("en_US" "[[:alpha:]]" "[^[:alpha:]]" "[']" nil ("-d" "en_US") nil utf-8))))
+   (t
+	(setq ispell-program-name nil)))
+  (setq-default ispell-extra-args (flyspell-detect-ispell-args t))
+  (global-set-key (kbd "M-s") 'ispell-word)
+  (setq-default flyspell-issue-message-flag nil)
+  (dolist (hook '(text-mode-hook))
+    (add-hook hook (lambda () (flyspell-mode 1))))
+  (dolist (hook prog-mode-hooks)
+    (add-hook hook (lambda () (flyspell-prog-mode 1))))
+  )
+
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -106,7 +145,7 @@
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
    (quote
-    (rust-mode rust-playground slime-volleyball use-package multi-web-mode magit ensime color-theme base16-theme))))
+	(highlight-parentheses flyspell-correct-popup rust-mode rust-playground slime-volleyball use-package multi-web-mode magit ensime color-theme base16-theme))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
