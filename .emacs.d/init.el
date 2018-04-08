@@ -1,13 +1,32 @@
+;; Requires:
+;; aspell
+
 ;; ----------- Default Variables -----------
 ;; Global variables
-(setq
- inhibit-startup-screen t
- column-number-mode t
- scroll-error-top-bottom t
- show-paren-delay 0.25)
+(defvar backup-directory (concat user-emacs-directory "backups"))
+(unless (file-exists-p backup-directory)
+  (make-directory backup-directory))
 
-;; Tab Config
-(setq tab-width 4)
+(setq-default inhibit-startup-screen t
+			  column-number-mode t
+			  scroll-error-top-bottom t
+			  show-paren-delay 0.25
+              tab-width 4
+	          indent-tabs-mode nil
+              x-select-enable-clipboard t
+              backup-directory-alist `(("." . backup-directory))
+              delete-old-versions t)
+
+;; (global-linum-mode)
+
+;; Delete selected text when typing (normal editor behavior)
+(delete-selection-mode t)
+
+;; ------------- Keybindings -------------
+(global-set-key (kbd "C-c /") 'comment-or-uncomment-region)
+(global-set-key (kbd "C-x g") 'magit-status)
+(global-set-key (kbd "C-c C-k") 'compile)
+(global-set-key (kbd "M-p") 'print-buffer)
 
 ;; ----------- Package Managing -----------
 ;; The package manager
@@ -28,6 +47,12 @@
 (require 'use-package)
 (setq use-package-always-ensure t)
 
+;; ---------- Use X11 clipboard -----------
+(use-package xclip
+  :config
+  (dolist (hook '(text-mode-hook prog-mode-hook)) (add-hook hook (lambda () (xclip-mode)))))
+
+;; --------- Parentheses Matching ---------
 (use-package highlight-parentheses
   :config
   (define-globalized-minor-mode global-highlight-parentheses-mode
@@ -36,6 +61,10 @@
 	  (highlight-parentheses-mode t)))
   (global-highlight-parentheses-mode t)
   )
+
+(use-package autopair
+  :config
+  (autopair-global-mode))
 
 ;; ----------- Ensime -----------
 ;; Java/Scala featues.  Includes:
@@ -59,9 +88,10 @@
 
 ;; ---------- Color Themes ----------
 (use-package color-theme
-  ;; Investiigate: Fixes error about missing directory
+  ;; TODO: Fixes error about missing directory.  Don't know why.
   :init
-  (unless (file-exists-p "~/.emacs.d/elpa/color-theme-20070910.1007/themes") (make-directory "~/.emacs.d/elpa/color-theme-20070910.1007/themes"))
+  (unless (file-exists-p "~/.emacs.d/elpa/color-theme-20070910.1007/themes")
+    (make-directory "~/.emacs.d/elpa/color-theme-20070910.1007/themes"))
   :config
   (color-theme-initialize))
 
@@ -105,6 +135,9 @@
 ;; ---------- C# Mode -------------
 (use-package csharp-mode)
 
+;; ------- Markdown Mode ----------
+(use-package markdown-mode)
+
 ;; ---- StackOverflow Client ------
 ;(use-package sx)
 
@@ -113,8 +146,7 @@
   (cond ((string-match  "aspell$" ispell-program-name)
 		 (append (list "--sug-mode=ultra" "--lang=en_US") (if run-together '("--run-together" "--run-together-limit=5" "--run-together-min=2"))))
 		((string-match "hunspell$" ispell-program-name)
-		 "-d en_US"))
-  )
+		 "-d en_US")))
 
 (use-package flyspell-correct-popup
   :config
@@ -131,8 +163,20 @@
   (global-set-key (kbd "M-s") 'ispell-word)
   (setq-default flyspell-issue-message-flag nil)
   (dolist (hook '(text-mode-hook magit-mode-hook)) (add-hook hook (lambda () (flyspell-mode))))
-  (add-hook 'prog-mode-hook (lambda () (flyspell-prog-mode)))
-  )
+  (add-hook 'prog-mode-hook (lambda () (flyspell-prog-mode))))
+
+;; -------- REST Client ---------
+(use-package restclient)
+
+;; ------- Highlight TODO -------
+(use-package hl-todo
+  :config
+  (add-hook 'prog-mode-hook (lambda () (hl-todo-mode))))
+
+;; ---- Printer Integration -----
+(use-package printing
+  :config
+  (pr-update-menus t))
 
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
@@ -141,7 +185,7 @@
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
    (quote
-	(highlight-parentheses flyspell-correct-popup rust-mode rust-playground slime-volleyball use-package multi-web-mode magit ensime color-theme base16-theme))))
+    (xclip hl-todo comment-tags restclient markdown-mode autopair highlight-parentheses flyspell-correct-popup rust-mode rust-playground slime-volleyball use-package multi-web-mode magit ensime color-theme base16-theme))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
