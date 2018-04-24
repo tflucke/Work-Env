@@ -100,16 +100,21 @@
 (use-package scala-mode
   :commands (scala-mode))
 ;  :mode "\\.scala\\'"
-
-(use-package ensime
-  :disabled
-  :if (version<= "24.4" emacs-version)
-  :pin melpa-stable)
+(when (version<= "24.4" emacs-version)
+  (use-package ensime
+    :pin melpa-stable))
 
 ; --------- C Syntax checker ---------
 (use-package flycheck-irony
   :hook c-mode)
 ;  :mode ("\\.c\\'" "\\.h\\'")
+
+(use-package auto-complete)
+
+(use-package auto-complete-clang-async
+  :requires auto-complete
+  :hook c-mode
+  :mode ("\\.c\\'" "\\.h\\'"))
 
 ;; ------------ Web Mode ------------
 (use-package multi-web-mode
@@ -226,7 +231,7 @@
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
    (quote
-    (xclip hl-todo comment-tags restclient markdown-mode autopair highlight-parentheses flyspell-correct-popup rust-mode rust-playground slime-volleyball use-package multi-web-mode magit ensime color-theme base16-theme))))
+    (auto-complete auto-complete-clang-async xclip hl-todo comment-tags restclient markdown-mode autopair highlight-parentheses flyspell-correct-popup rust-mode rust-playground slime-volleyball use-package multi-web-mode magit ensime color-theme base16-theme))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
