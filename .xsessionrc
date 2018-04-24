@@ -2,6 +2,8 @@
 
 ~/.i3/generatei3Config.sh
 
-numlockx
+if which numlockx > /dev/null 2> /dev/null; then
+    numlockx
+fi
 
 #exec xautolock -time 15 -locker '/usr/local/bin/suspend' &

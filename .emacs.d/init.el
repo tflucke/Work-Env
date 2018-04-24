@@ -98,7 +98,8 @@
 ;; * Refactoring
 ;; * Error detection
 (use-package scala-mode
-  :mode "\\.scala\\'")
+  :commands (scala-mode))
+;  :mode "\\.scala\\'"
 
 (use-package ensime
   :disabled
@@ -107,8 +108,8 @@
 
 ; --------- C Syntax checker ---------
 (use-package flycheck-irony
-  :hook c-mode
-  :mode ("\\.c\\'" "\\.h\\'"))
+  :hook c-mode)
+;  :mode ("\\.c\\'" "\\.h\\'")
 
 ;; ------------ Web Mode ------------
 (use-package multi-web-mode
@@ -128,8 +129,8 @@
     :bind ("C-x g" . magit-status)))
 
 ;; ----------- Rust Mode ------------
-(use-package rust-mode
-  :mode ("\\.rs\\'"))
+(use-package rust-mode)
+;  :mode ("\\.rs\\'")
 (use-package rust-playground
   :requires rust-mode)
 (use-package cargo
@@ -147,13 +148,13 @@
 
 ;; ---------- C# Mode -------------
 (use-package csharp-mode
-  :if (version<= "24.4" emacs-version)
-  :mode ("\\.cs\\'"))
+  :if (version<= "24.4" emacs-version))
+;  :mode ("\\.cs\\'")
 
 ;; ------- Markdown Mode ----------
 (when (version<= "24.4" emacs-version)
-  (use-package markdown-mode
-    :mode ("\\.markdown\\'" "\\.md\\'")))
+  (use-package markdown-mode))
+;    :mode ("\\.markdown\\'" "\\.md\\'")
 
 ;; ---- StackOverflow Client ------
 (use-package sx

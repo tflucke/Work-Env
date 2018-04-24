@@ -2,4 +2,6 @@
 
 sh ~/.xsessionrc
 
-exec /usr/bin/i3
+if [ -f /usr/bin/i3 ]; then
+    exec /usr/bin/i3
+fi

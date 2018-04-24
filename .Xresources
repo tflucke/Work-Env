@@ -4,3 +4,6 @@ XTerm*metaSendsEscape: true
 XTerm*eightBitInput: false
 XTerm*Background: black
 XTerm*Foreground: green
+
+Gnome-terminal*Background: black
+Gnome-terminal*Foreground: green
