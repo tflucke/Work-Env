@@ -112,19 +112,27 @@ If point was already at that position, move point to beginning of line."
 ;; * Refactoring
 ;; * Error detection
 (use-package scala-mode
-  :mode "\\.scala\\'")
+  :commands (scala-mode))
+  ;:mode "\\.scala\\'")
 
 (use-package company)
 
-(use-package ensime
-  :if (version<= "24.4" emacs-version)
-  :requires company
-  :hook (scala-mode java-mode)
-  :config (setq ensime-startup-notification nil)
-  :pin melpa-stable)
+(when (version<= "24.4" emacs-version)
+  (use-package ensime
+    :requires company
+    :hook (scala-mode java-mode)
+    :config (setq ensime-startup-notification nil)
+    :pin melpa-stable))
 
 ; --------- C Syntax checker ---------
 (use-package flycheck-irony
+  :hook c-mode)
+;  :mode ("\\.c\\'" "\\.h\\'")
+
+(use-package auto-complete)
+
+(use-package auto-complete-clang-async
+  :requires auto-complete
   :hook c-mode
   :mode ("\\.c\\'" "\\.h\\'"))
 
@@ -146,8 +154,8 @@ If point was already at that position, move point to beginning of line."
     :bind ("C-x g" . magit-status)))
 
 ;; ----------- Rust Mode ------------
-(use-package rust-mode
-  :mode ("\\.rs\\'"))
+(use-package rust-mode)
+;  :mode ("\\.rs\\'")
 (use-package rust-playground
   :requires rust-mode)
 (use-package cargo
@@ -165,13 +173,13 @@ If point was already at that position, move point to beginning of line."
 
 ;; ---------- C# Mode -------------
 (use-package csharp-mode
-  :if (version<= "24.4" emacs-version)
-  :mode ("\\.cs\\'"))
+  :if (version<= "24.4" emacs-version))
+;  :mode ("\\.cs\\'")
 
 ;; ------- Markdown Mode ----------
 (when (version<= "24.4" emacs-version)
-  (use-package markdown-mode
-    :mode ("\\.markdown\\'" "\\.md\\'")))
+  (use-package markdown-mode))
+;    :mode ("\\.markdown\\'" "\\.md\\'")
 
 ;; ---- StackOverflow Client ------
 (use-package sx
@@ -243,7 +251,11 @@ If point was already at that position, move point to beginning of line."
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
    (quote
+<<<<<<< HEAD
     (company xclip hl-todo comment-tags restclient markdown-mode autopair highlight-parentheses flyspell-correct-popup rust-mode rust-playground slime-volleyball use-package multi-web-mode magit ensime color-theme base16-theme))))
+=======
+    (auto-complete auto-complete-clang-async xclip hl-todo comment-tags restclient markdown-mode autopair highlight-parentheses flyspell-correct-popup rust-mode rust-playground slime-volleyball use-package multi-web-mode magit ensime color-theme base16-theme))))
+>>>>>>> 7ce8d5af1ffc98a8f6ac335c67e48bbbd53e8f56
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.

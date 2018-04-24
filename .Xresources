@@ -1,6 +1,14 @@
 #include ".Xresources.d/monitors"
 
-XTerm*metaSendsEscape: true
-XTerm*eightBitInput: false
-XTerm*Background: black
-XTerm*Foreground: green
+XTerm*metaSendsEscape:    true
+XTerm*eightBitInput:      false
+XTerm*Background:         black
+XTerm*Foreground:         green
+xterm*faceName:           Deja Vu Sans Mono
+xterm*faceSize:           10
+XTerm.vt100.backarrowKey: false
+XTerm.ttyModes:           erase ^?
+XTerm.vt100.saveLines:    2048
+
+Gnome-terminal*Background: black
+Gnome-terminal*Foreground: green
