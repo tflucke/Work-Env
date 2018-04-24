@@ -29,6 +29,20 @@
         collect (funcall f b)))
 
 ;; ------------- Keybindings -------------
+(defun smart-beginning-of-line ()
+  "Move point to first non-whitespace character or beginning-of-line.
+
+Move point to the first non-whitespace character on this line.
+If point was already at that position, move point to beginning of line."
+  (interactive "^")
+  ;(if (version< "22" emacs-version) (interactive "^") (interactive))
+  (let ((oldpos (point)))
+    (beginning-of-line-text); goes to first significant character
+    ;(back-to-indentation); goes to first non-whitespace
+    (and (= oldpos (point))
+         (beginning-of-line))))
+
+(global-set-key [home] 'smart-beginning-of-line)
 (global-set-key (kbd "C-c /") 'comment-or-uncomment-region)
 (global-set-key (kbd "C-c C-k") 'compile)
 
@@ -52,8 +66,8 @@
 
 ;; ---------- Use X11 clipboard -----------
 (use-package xclip
-  :hook ((text-mode-hook prog-mode-hook) . xclip-mode)
-  :if (executable-find "xclip"))
+  :if (executable-find "xclip")
+  :config (xclip-mode 1))
 
 ;; ---------- Color Themes ----------
 (use-package color-theme
@@ -100,9 +114,13 @@
 (use-package scala-mode
   :mode "\\.scala\\'")
 
+(use-package company)
+
 (use-package ensime
-  :disabled
   :if (version<= "24.4" emacs-version)
+  :requires company
+  :hook (scala-mode java-mode)
+  :config (setq ensime-startup-notification nil)
   :pin melpa-stable)
 
 ; --------- C Syntax checker ---------
@@ -225,7 +243,7 @@
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
    (quote
-    (xclip hl-todo comment-tags restclient markdown-mode autopair highlight-parentheses flyspell-correct-popup rust-mode rust-playground slime-volleyball use-package multi-web-mode magit ensime color-theme base16-theme))))
+    (company xclip hl-todo comment-tags restclient markdown-mode autopair highlight-parentheses flyspell-correct-popup rust-mode rust-playground slime-volleyball use-package multi-web-mode magit ensime color-theme base16-theme))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
