@@ -59,8 +59,8 @@
 (use-package color-theme
   :init
   ;; TODO: Fixes error about missing directory.  Don't know why.
-  (unless (file-exists-p "~/.emacs.d/elpa/color-theme-20070910.1007/themes")
-    (make-directory "~/.emacs.d/elpa/color-theme-20070910.1007/themes"))
+  ;(unless (file-exists-p "~/.emacs.d/elpa/color-theme-20070910.1007/themes")
+  ;  (make-directory "~/.emacs.d/elpa/color-theme-20070910.1007/themes"))
   :config
   (color-theme-initialize))
 
@@ -113,8 +113,7 @@
 
 (use-package auto-complete-clang-async
   :requires auto-complete
-  :hook c-mode
-  :mode ("\\.c\\'" "\\.h\\'"))
+  :hook c-mode)
 
 ;; ------------ Web Mode ------------
 (use-package multi-web-mode
