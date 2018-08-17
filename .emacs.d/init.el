@@ -304,26 +304,3 @@ an opening tag that is not followed by a matching closing tag."
              lpr-region)
   :config
   (pr-update-menus t))
-
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(custom-safe-themes
-<<<<<<< Updated upstream
-   (quote
-    ("102c7a106e03ec19e9a31562bc611632fbb4b7f1ca09aca0d2da77e57cb510b0" "eef1aa0f203162ff23ca375cae72922bddff2451d979d9370e79b4357000529d" default))))
-=======
-   (quote
-    ("3380a2766cf0590d50d6366c5a91e976bdc3c413df963a0ab9952314b4577299" "760ce657e710a77bcf6df51d97e51aae2ee7db1fba21bbad07aab0fa0f42f834" default)))
- '(package-selected-packages
-   (quote
-    (jdee auto-complete auto-complete-clang-async xclip hl-todo comment-tags restclient markdown-mode autopair highlight-parentheses flyspell-correct-popup rust-mode rust-playground slime-volleyball use-package multi-web-mode magit ensime color-theme base16-theme))))
->>>>>>> Stashed changes
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- )
