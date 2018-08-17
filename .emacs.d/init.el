@@ -177,7 +177,7 @@ If point was already at that position, move point to beginning of line."
 ;; ;  :mode ("\\.c\\'" "\\.h\\'")
 
 ;; ------------ Web Mode ------------
-;; TODO: Automatic closing tab would be nice
+;; TODO: Automatic closing tag would be nice
 (defun my-sgml-insert-gt ()
   "Inserts a `>' character and calls 
 `my-sgml-close-tag-if-necessary', leaving point where it is."
