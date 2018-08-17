@@ -63,7 +63,6 @@ ecex()
 alias emacs='emacs -nw'
 alias xterm='ecex xterm -rv'
 alias decks='ecex "$MTG_DIR" && ecex mv /tmp/*.dec "$MTG_DIR"'
-alias newMusic='ecex sudo chown media /tmp/*.mp3 && ecex sudo -u media mv -v /tmp/*.mp3 /media/music && ecex mpc update'
 alias playMusic='ecex mpc clear && ecex getLyricalSongs | ecex mpc add && ecex mpc shuffle && ecex mpc play'
 alias conServer='ecex ssh tflucke@63.246.2.164'
 alias packageSize="pacman -Qi | gawk '/^Name/ { x = $3 }; /^Installed Size/ { sub(/Installed Size  *:/, ""); print x":" $0 }' | sort -k2,3nr"
@@ -81,6 +80,14 @@ amount () {
 	udevil mount "/dev/$1"
     fi	
 } 
+
+newMusic() {
+    for x in /tmp/*.mp3; do
+        sudo chown media "$x"
+	sudo -u media mv -v "$x" /media/music
+    done
+    ecex mpc update
+}
 
 mysqlpermissions()
 {

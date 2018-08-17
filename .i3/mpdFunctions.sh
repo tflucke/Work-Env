@@ -15,7 +15,7 @@ display_song() {
 		;;
 	esac
 #	time = $(mpc status | sed 1d | head -n1 | awk '{ print $3 }')
-	echo '[{"name": "mpd", "instance": "now playing", "full_text": "'${status}' '$1'", "color": "'${color}'"}]'
+	echo '[{"name": "mpd", "instance": "now playing", "full_text": "'${status}' '$1'", "color": "'${color}'"}] '
 }
 
 (while :; do
